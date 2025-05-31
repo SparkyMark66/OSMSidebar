@@ -1,0 +1,82 @@
+// This script runs in the background of your extension.
+
+// --- Context Menu Creation ---
+// Called when the extension is first installed or updated.
+chrome.runtime.onInstalled.addListener(() => {
+  // Ensure the context menu item is correctly set up.
+  chrome.contextMenus.remove("mapSelectedPostcode", () => {
+    chrome.contextMenus.create({
+      id: "mapSelectedPostcode",
+      title: "Map selected text in Postcode Map Viewer",
+      contexts: ["selection"]
+    });
+    console.log("Context menu item 'mapSelectedPostcode' created/updated.");
+  });
+});
+
+// --- Context Menu Click Listener ---
+chrome.contextMenus.onClicked.addListener((info, tab) => {
+  if (info.menuItemId === "mapSelectedPostcode" && info.selectionText) {
+    const selectedPostcode = info.selectionText.trim();
+    console.log(`Context menu clicked. Processed selected text: "${selectedPostcode}"`);
+
+    if (!selectedPostcode) {
+      console.warn("Selected text is empty after trimming. Not proceeding with search.");
+      // In a production extension, you might send a notification here.
+      return;
+    }
+
+    // --- Helper function to send message to sidebar ---
+    const sendMessageToSidebar = (postcode) => {
+      chrome.runtime.sendMessage({
+        action: "mapPostcode",
+        postcode: postcode
+      }, (response) => {
+        if (chrome.runtime.lastError) {
+          console.error("Error sending message to sidebar or sidebar not ready:", chrome.runtime.lastError.message);
+          // Log the error. No alert() here as it's a background script.
+        } else {
+          console.log("Message sent to sidebar, response:", response);
+        }
+      });
+    };
+
+    // --- Attempt to open the side panel ---
+    if (chrome.sidePanel && typeof chrome.sidePanel.open === 'function') {
+      chrome.sidePanel.open({ tabId: tab.id })
+        .then(() => {
+          console.log(`Side panel explicitly opened for tab: ${tab.id}.`);
+          sendMessageToSidebar(selectedPostcode);
+        })
+        .catch(error => {
+          console.error("Failed to explicitly open side panel:", error);
+          // Log the error. No alert() here.
+          // Fallback to setOptions if open() fails
+          chrome.sidePanel.setOptions({ tabId: tab.id, enabled: true })
+            .then(() => {
+              console.log(`Side panel enabled via setOptions for tab: ${tab.id}.`);
+              sendMessageToSidebar(selectedPostcode);
+            })
+            .catch(err => {
+              console.error("Failed to enable side panel via setOptions:", err);
+              // Log the error. No alert() here.
+            });
+        });
+    } else {
+      // Fallback for older browser versions where chrome.sidePanel.open() is not available.
+      console.log("chrome.sidePanel.open() not available. Falling back to setOptions.");
+      chrome.sidePanel.setOptions({
+        tabId: tab.id,
+        enabled: true
+      })
+      .then(() => {
+        console.log(`Side panel enabled via setOptions for tab: ${tab.id}.`);
+        sendMessageToSidebar(selectedPostcode);
+      })
+      .catch(error => {
+        console.error("Failed to enable side panel via setOptions:", error);
+        // Log the error. No alert() here.
+      });
+    }
+  }
+});

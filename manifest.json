@@ -1,0 +1,34 @@
+{
+  "manifest_version": 3,
+  "name": "Postcode Map Viewer",
+  "version": "1.2",
+  "description": "View UK postcodes on OpenStreetMap in a sidebar using Leaflet, with context menu integration.",
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png"
+    },
+    "default_title": "Open Postcode Map"
+  },
+  "side_panel": {
+    "default_path": "sidebar.html"
+  },
+  "permissions": [
+    "sidePanel",
+    "activeTab",
+    "contextMenus",
+    "*://nominatim.openstreetmap.org/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'; img-src 'self' data: https://*.tile.openstreetmap.org;"
+  }
+}

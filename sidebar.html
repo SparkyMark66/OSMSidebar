@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Postcode Map Viewer</title>
+  <link rel="stylesheet" href="/lib/leaflet/leaflet.css"/>
+  <link rel="stylesheet" href="sidebar.css">
+  <style>
+    #mapid {
+      height: 100%;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <h1>Postcode Map</h1>
+  <div class="input-container">
+    <input type="text" id="postcodeInput" placeholder="Enter UK Postcode">
+    <button id="findButton">Find</button>
+    <button id="clearButton">Clear</button>
+  </div>
+  <div class="map-container">
+    <div id="mapid"></div>
+  </div>
+  <div id="latitudeDisplay" class="latlon-display"></div>
+  <div id="longitudeDisplay" class="latlon-display"></div>
+
+  <script src="/lib/leaflet/leaflet.js"></script>
+  <script src="sidebar.js"></script>
+</body>
+</html>

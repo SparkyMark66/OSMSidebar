@@ -1,0 +1,72 @@
+// This script runs in the background of your extension.
+
+// --- Context Menu Creation ---
+// Called when the extension is first installed or updated.
+chrome.runtime.onInstalled.addListener(() => {
+  // Ensure the context menu item is correctly set up.
+  // We use remove then create to handle updates gracefully.
+  chrome.contextMenus.remove("mapSelectedPostcode", () => {
+    // This callback runs whether the item existed or not, then we create it.
+    chrome.contextMenus.create({
+      id: "mapSelectedPostcode", // A unique ID for your menu item
+      title: "Map selected text in Postcode Map Viewer", // Text shown in the menu
+      contexts: ["selection"] // Show only when text is selected
+    });
+    console.log("Context menu item 'mapSelectedPostcode' created/updated.");
+  });
+});
+
+// --- Context Menu Click Listener ---
+// This function runs when your context menu item is clicked.
+chrome.contextMenus.onClicked.addListener((info, tab) => {
+  // Check if our specific menu item was clicked AND if text was actually selected.
+  if (info.menuItemId === "mapSelectedPostcode" && info.selectionText) {
+    // Get the selected text and remove any leading/trailing whitespace.
+    const selectedPostcode = info.selectionText.trim();
+    console.log(`Context menu clicked. Processed selected text: "${selectedPostcode}"`);
+
+    // If the selected text is empty after trimming, don't proceed.
+    if (!selectedPostcode) {
+      console.warn("Selected text is empty after trimming. Not proceeding with search.");
+      alert("Please select some valid text (like a postcode) to map.");
+      return;
+    }
+
+    // --- Step 1: Ensure the side panel is enabled and visible for the current tab. ---
+    // chrome.sidePanel.setOptions is the correct way to control side panel visibility.
+    // It will open the sidebar if it's not already open for this tab.
+    chrome.sidePanel.setOptions({
+      tabId: tab.id,
+      enabled: true // Set to true to make it visible and open it.
+    })
+    .then(() => {
+      console.log(`Side panel successfully enabled for tab: ${tab.id}. Now attempting to send message.`);
+
+      // --- Step 2: Send a message to the sidebar's script. ---
+      // We'll send the selected postcode to the sidebar.
+      chrome.runtime.sendMessage({
+        action: "mapPostcode",    // A custom action type to identify our message
+        postcode: selectedPostcode // The selected text (postcode)
+      }, (response) => {
+        // --- Step 3: Handle response from the sidebar. ---
+        if (chrome.runtime.lastError) {
+          // This error often occurs if the sidebar hasn't fully loaded or is not responsive.
+          console.error("Error sending message to sidebar or sidebar not ready:", chrome.runtime.lastError.message);
+          alert("Map sidebar might not be ready. Please ensure the sidebar is open and try the right-click again.");
+        } else {
+          console.log("Message sent to sidebar, response:", response);
+        }
+      });
+    })
+    .catch(error => {
+      // This catches errors if setOptions itself fails (e.g., API not available, invalid tabId).
+      console.error("Failed to enable side panel:", error);
+      alert(`Could not open map sidebar from context menu: ${error.message}. Please check extension permissions.`);
+    });
+  }
+});
+
+// --- Toolbar Icon Click Handler ---
+// This implicitly opens the side panel because "side_panel.default_path" is defined in manifest.json.
+// No explicit code is typically needed here unless you want custom logic beyond just opening the sidebar.
+// If your toolbar icon isn't opening the sidebar, it's usually a manifest or service worker startup issue.
