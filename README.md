@@ -66,22 +66,39 @@ This extension is designed to be loaded as an "unpacked" extension in Microsoft 
 
 ## 📁 Project Structure
 ├── manifest.json
+
 ├── background.js           # Handles context menu and inter-component communication
+
 ├── sidebar.html            # UI for the sidebar
+
 ├── sidebar.js              # Logic for the sidebar UI and map interaction
+
 ├── sidebar.css             # Styling for the sidebar UI
+
 ├── icons/                  # Stores extension icons (16x16, 32x32, 48x48, 128x128)
+
 │   ├── icon16.png
+
 │   ├── icon32.png
+
 │   ├── icon48.png
+
 │   └── icon128.png
+
 └── lib/                    # Local library dependencies
+
 └── leaflet/            # Leaflet.js library files
+
 ├── images/         # Default Leaflet marker images
+
 │   ├── marker-icon.png
+
 │   ├── marker-icon-2x.png
+
 │   └── marker-shadow.png
+
 ├── leaflet.css
+
 └── leaflet.js
 
 
