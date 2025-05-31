@@ -21,7 +21,7 @@ This extension is designed to be loaded as an "unpacked" extension in Microsoft 
 
 1.  **Download/Clone:** Obtain the extension files. If this is a Git repository, clone it:
     ```bash
-    git clone <your-repo-url>
+    git clone https://github.com/SparkyMark66/OSMSidebar
     cd postcode-map-viewer-extension
     ```
     Otherwise, ensure you have all the project files in a single folder on your computer.
