@@ -115,4 +115,4 @@ This extension is designed to be loaded as an "unpacked" extension in Microsoft 
 This project is open-source and available under the MIT License.
 
 ---
-
+*As Edge uses the Underlying Chrome technology, this will also work in Chrome and probably FireFox.
