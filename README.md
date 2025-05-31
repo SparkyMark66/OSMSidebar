@@ -65,3 +65,37 @@ This extension is designed to be loaded as an "unpacked" extension in Microsoft 
     * This will open a new browser tab/window, displaying the pinpointed location on OpenStreetMap.org.
 
 ## 📁 Project Structure
+├── manifest.json
+├── background.js           # Handles context menu and inter-component communication
+├── sidebar.html            # UI for the sidebar
+├── sidebar.js              # Logic for the sidebar UI and map interaction
+├── sidebar.css             # Styling for the sidebar UI
+├── icons/                  # Stores extension icons (16x16, 32x32, 48x48, 128x128)
+│   ├── icon16.png
+│   ├── icon32.png
+│   ├── icon48.png
+│   └── icon128.png
+└── lib/                    # Local library dependencies
+└── leaflet/            # Leaflet.js library files
+├── images/         # Default Leaflet marker images
+│   ├── marker-icon.png
+│   ├── marker-icon-2x.png
+│   └── marker-shadow.png
+├── leaflet.css
+└── leaflet.js
+
+
+## 💻 Technologies Used
+
+* **Microsoft Edge Extensions API (Manifest V3)**
+* **HTML5, CSS3, JavaScript**
+* **Leaflet.js:** An open-source JavaScript library for mobile-friendly interactive maps.
+* **OpenStreetMap (OSM):** Provides the base map data.
+* **Nominatim:** OpenStreetMap's geocoding service (used for postcode lookup).
+
+## 📄 License
+
+This project is open-source and available under the MIT License.
+
+---
+
